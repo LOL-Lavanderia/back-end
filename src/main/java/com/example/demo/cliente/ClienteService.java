@@ -1,6 +1,11 @@
 package com.example.demo.cliente;
 
+import com.example.demo.utils.PasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,10 +16,16 @@ import java.util.Optional;
 public class ClienteService {
 
     private final ClienteRepository clienteRepository;
+    private final JavaMailSender javaMailSender;
+
+    private final PasswordService passwordService;
 
     @Autowired
-    public ClienteService(ClienteRepository clienteRepository) {
+    public ClienteService(ClienteRepository clienteRepository, JavaMailSender javaMailSender, PasswordService passwordService) {
+
         this.clienteRepository = clienteRepository;
+        this.javaMailSender = javaMailSender;
+        this.passwordService = passwordService;
     }
 
     public List<Cliente> getClientes() {
@@ -23,7 +34,31 @@ public class ClienteService {
 
     @Transactional
     public void addNewCliente(Cliente cliente) {
+
+        String senhaGerada = gerarSenha(cliente);
+        enviarEmail(cliente.getEmail(), senhaGerada);
+
         clienteRepository.save(cliente);
+    }
+
+    private void enviarEmail(String email, String senhaGerada) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(email);
+        message.setSubject("Sua Nova Senha");
+        message.setText("Sua nova senha é: " + senhaGerada);
+
+        MailSender javaMailSender;
+        this.javaMailSender.send(message);
+    }
+
+    public String gerarSenha(Cliente cliente) {
+        String senha = String.format("%04d", (int) (Math.random() * 10000));
+        String salt = passwordService.generateSalt();
+        String senhaEncriptografada = passwordService.hashPasswordWithSalt(senha,salt);
+        cliente.setSalt(salt);
+        cliente.setSenha(senhaEncriptografada);
+
+        return senha;
     }
 
 

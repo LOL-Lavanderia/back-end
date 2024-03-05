@@ -20,6 +20,17 @@ public class Cliente {
     String email;
     String endereco;
     String telefone;
+    String senha;
+
+    String salt;
+
+    public String getSalt() {
+        return salt;
+    }
+
+    public void setSalt(String salt) {
+        this.salt = salt;
+    }
 
     public Long getId() {
         return id;
@@ -49,6 +60,10 @@ public class Cliente {
         return email;
     }
 
+    public String getSenha() {
+        return senha;
+    }
+
     public void setEmail(String email) {
         this.email = email;
     }
@@ -68,14 +83,21 @@ public class Cliente {
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
+    }
     @Override
     public String toString(){
         return "Cliente{" +
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 ", email=" + email + '\'' +
-                ", endereco=" + endereco +
+                ", endereco=" + endereco + '\'' +
+                ", senha=" + senha + '\'' +
+                ", salt=" + salt +
                 '}';
     }
+
 
 }
