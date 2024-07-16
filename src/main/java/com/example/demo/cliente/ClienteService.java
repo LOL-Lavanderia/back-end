@@ -1,11 +1,13 @@
 package com.example.demo.cliente;
-
+import com.example.demo.endereco.Endereco;
+import com.example.demo.endereco.EnderecoDTO;
+import com.example.demo.endereco.EnderecoService;
 import com.example.demo.utils.PasswordService;
+import com.example.demo.utils.ViaCepService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,14 +19,19 @@ public class ClienteService {
 
     private final ClienteRepository clienteRepository;
     private final JavaMailSender javaMailSender;
+    private final ViaCepService viaCepService;
+
+    private final EnderecoService enderecoService;
 
     private final PasswordService passwordService;
 
     @Autowired
-    public ClienteService(ClienteRepository clienteRepository, JavaMailSender javaMailSender, PasswordService passwordService) {
+    public ClienteService(ClienteRepository clienteRepository, JavaMailSender javaMailSender, ViaCepService viaCepService, EnderecoService enderecoService, PasswordService passwordService) {
 
         this.clienteRepository = clienteRepository;
         this.javaMailSender = javaMailSender;
+        this.viaCepService = viaCepService;
+        this.enderecoService = enderecoService;
         this.passwordService = passwordService;
     }
 
@@ -33,13 +40,19 @@ public class ClienteService {
     }
 
     @Transactional
-    public void addNewCliente(Cliente cliente) {
+    public void addNewCliente(ClienteDTO clienteDTO, EnderecoDTO enderecoDTO) {
+        System.out.println(clienteDTO.getNome());
+        Cliente cliente = defineCliente(clienteDTO);
+        Endereco endereco = defineEndereco(enderecoDTO);
+        cliente.setEndereco(endereco);
 
         String senhaGerada = gerarSenha(cliente);
         enviarEmail(cliente.getEmail(), senhaGerada);
 
         clienteRepository.save(cliente);
     }
+
+
 
     private void enviarEmail(String email, String senhaGerada) {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -61,6 +74,10 @@ public class ClienteService {
         return senha;
     }
 
+//       public Endereco addEndereco(String cep) {
+//           return enderecoService.buscarEnderecoPorCep(cep);
+//    }
+
 
     public void deleteCliente(Long id) {
         clienteRepository.deleteById(id);
@@ -81,7 +98,7 @@ public class ClienteService {
         }
     }
     @Transactional
-    public void updateCliente(Long id, String name, String email, String endereco, String telefone) {
+    public void updateCliente(Long id, String name, String email, String telefone) {
         Cliente clienteUpdate = clienteRepository.findById(id).orElseThrow(() -> new IllegalStateException("Cliente with id" + id + "not found."));
         if(clienteUpdate.getNome().equals(name)){
             System.out.println("O nome já está atualizado");
@@ -98,19 +115,37 @@ public class ClienteService {
             clienteUpdate.setEmail(email);
         }
 
-        if(clienteUpdate.getEndereco().equals(endereco)){
-            System.out.println("Endereço já está atualizado.");
-        }
-        else{
-            clienteUpdate.setEndereco(endereco);
-        }
-
         if(clienteUpdate.getTelefone().equals(telefone)){
             System.out.println("Telefone já está atualizado.");
         }
         else{
-            clienteUpdate.setEndereco(telefone);
+            clienteUpdate.setTelefone(telefone);
         }
 
     }
+
+    public Cliente defineCliente(ClienteDTO clienteDTO){
+        Cliente cliente = new Cliente();
+        cliente.setNome(clienteDTO.getNome());
+        cliente.setCpf(clienteDTO.getCpf());
+        cliente.setEmail(clienteDTO.getEmail());
+        cliente.setTelefone(clienteDTO.getTelefone());
+
+        return cliente;
+
+    }
+
+    private Endereco defineEndereco(EnderecoDTO enderecoDTO) {
+        Endereco endereco = new Endereco();
+        endereco.setBairro(enderecoDTO.getBairro());
+        endereco.setLocalidade(enderecoDTO.getLocalidade());
+        endereco.setCep(enderecoDTO.getCep());
+        endereco.setLogradouro(enderecoDTO.getLogradouro());
+        endereco.setUf(enderecoDTO.getUf());
+        endereco.setNumero(endereco.getNumero());
+
+        return endereco;
+    }
+
+
 }

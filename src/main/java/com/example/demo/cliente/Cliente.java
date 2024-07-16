@@ -1,4 +1,5 @@
 package com.example.demo.cliente;
+import com.example.demo.endereco.Endereco;
 import jakarta.persistence.*;
 
 @Entity
@@ -6,23 +7,27 @@ import jakarta.persistence.*;
 public class Cliente {
     @Id
     @SequenceGenerator(
-            name="student_sequence",
-            sequenceName="student_sequence",
+            name="cliente_sequence",
+            sequenceName="cliente_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "student_sequence"
+            generator = "cliente_sequence"
     )
     private Long id;
     String cpf;
     String nome;
     String email;
-    String endereco;
     String telefone;
-    String senha;
+    
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "endereco_id")
+    private Endereco endereco;
 
+    String senha;
     String salt;
+
 
     public String getSalt() {
         return salt;
@@ -68,14 +73,6 @@ public class Cliente {
         this.email = email;
     }
 
-    public String getEndereco() {
-        return endereco;
-    }
-
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
-    }
-
     public String getTelefone() {
         return telefone;
     }
@@ -87,6 +84,15 @@ public class Cliente {
     public void setSenha(String senha) {
         this.senha = senha;
     }
+
+    public Endereco getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(Endereco endereco) {
+        this.endereco = endereco;
+    }
+
     @Override
     public String toString(){
         return "Cliente{" +
