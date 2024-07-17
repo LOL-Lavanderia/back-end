@@ -6,10 +6,26 @@ public class EnderecoDTO {
     private String logradouro;
     private String bairro;
     private String numero;
-    private String localidade;
+    private String cidade;
     private String uf;
+    private Long tipo;
 
-    // Getters e setters para cada campo
+    public String getCidade() {
+        return cidade;
+    }
+
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
+    }
+
+    public Long getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(Long tipo) {
+        this.tipo = tipo;
+    }
+// Getters e setters para cada campo
 
     public Long getId() {
         return id;
@@ -51,14 +67,6 @@ public class EnderecoDTO {
         this.numero = numero;
     }
 
-    public String getLocalidade() {
-        return localidade;
-    }
-
-    public void setLocalidade(String localidade) {
-        this.localidade = localidade;
-    }
-
     public String getUf() {
         return uf;
     }
@@ -75,9 +83,9 @@ public class EnderecoDTO {
                 ", logradouro='" + logradouro + '\'' +
                 ", bairro='" + bairro + '\'' +
                 ", numero='" + numero + '\'' +
-                ", localidade='" + localidade + '\'' +
+                ", cidade='" + cidade + '\'' +
                 ", uf='" + uf + '\'' +
+                ", tipo=" + tipo +
                 '}';
     }
-
 }

@@ -23,6 +23,16 @@ public class Roupa {
 
     private String prazo;
 
+    private Long quantidade;
+
+    public Long getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(Long quantidade) {
+        this.quantidade = quantidade;
+    }
+
     public Long getId() {
         return id;
     }
@@ -55,13 +65,5 @@ public class Roupa {
         this.prazo = prazo;
     }
 
-    @Override
-    public String toString() {
-        return "Roupa{" +
-                "id=" + id +
-                ", nome='" + nome + '\'' +
-                ", valor='" + valor + '\'' +
-                ", prazo='" + prazo + '\'' +
-                '}';
-    }
+
 }

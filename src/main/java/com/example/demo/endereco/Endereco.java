@@ -24,12 +24,15 @@ public class Endereco {
     @Column
     private String bairro;
     @Column
-    private String localidade;
+    private String cidade;
 
     @Column
     private String numero;
     @Column
     private String uf;
+
+    @Column
+    private Long tipo;
 
     @Override
     public String toString() {
@@ -37,7 +40,7 @@ public class Endereco {
                 "\n" + "Logradouro: " + logradouro +
                 "\n" + "numero: " + numero +
                 "\n"+ "Bairro=" + bairro +
-                "\n" + "Localidade: " + localidade +
+                "\n" + "Localidade: " + cidade +
                 "\n" + "Uf: " + uf;
     }
 
@@ -80,12 +83,12 @@ public class Endereco {
         this.bairro = bairro;
     }
 
-    public String getLocalidade() {
-        return localidade;
+    public String getCidade() {
+        return cidade;
     }
 
-    public void setLocalidade(String localidade) {
-        this.localidade = localidade;
+    public void setCidade(String cidade) {
+        this.cidade = cidade;
     }
 
     public String getUf() {
@@ -94,5 +97,13 @@ public class Endereco {
 
     public void setUf(String uf) {
         this.uf = uf;
+    }
+
+    public Long getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(Long tipo) {
+        this.tipo = tipo;
     }
 }

@@ -1,27 +1,18 @@
 package com.example.demo.cliente;
 
 import com.example.demo.endereco.EnderecoDTO;
-public class ClienteDTO {
-    private Long id;
+import com.example.demo.telefone.TelefoneDTO;
+import com.example.demo.user.UsuarioDTO;
+
+import java.util.List;
+
+public class ClienteDTO extends UsuarioDTO {
     private String cpf;
-    private String nome;
-    private String email;
-    private String telefone;
+    private List<EnderecoDTO> enderecos;
+    private List<TelefoneDTO> telefones;
 
-    public ClienteDTO(Long id, String cpf, String nome, String email, String telefone) {
-        this.id = id;
-        this.cpf = cpf;
-        this.nome = nome;
-        this.email = email;
-        this.telefone = telefone;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public ClienteDTO(Long id, String email, String senha, String salt, String role,String nome) {
+        super(id, email, senha, salt, role, nome);
     }
 
     public String getCpf() {
@@ -32,38 +23,28 @@ public class ClienteDTO {
         this.cpf = cpf;
     }
 
-    public String getNome() {
-        return nome;
+    public List<EnderecoDTO> getEnderecos() {
+        return enderecos;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setEnderecos(List<EnderecoDTO> enderecos) {
+        this.enderecos = enderecos;
     }
 
-    public String getEmail() {
-        return email;
+    public List<TelefoneDTO> getTelefones() {
+        return telefones;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
+    public void setTelefones(List<TelefoneDTO> telefones) {
+        this.telefones = telefones;
     }
 
     @Override
     public String toString() {
         return "ClienteDTO{" +
-                "id=" + id +
-                ", cpf='" + cpf + '\'' +
-                ", nome='" + nome + '\'' +
-                ", email='" + email + '\'' +
-                ", telefone='" + telefone + '\'' +
+                "cpf='" + cpf + '\'' +
+                ", enderecos=" + enderecos +
+                ", telefones=" + telefones +
                 '}';
     }
 }
