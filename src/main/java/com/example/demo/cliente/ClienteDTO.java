@@ -3,6 +3,7 @@ package com.example.demo.cliente;
 import com.example.demo.endereco.EnderecoDTO;
 import com.example.demo.telefone.TelefoneDTO;
 import com.example.demo.user.UsuarioDTO;
+import com.example.demo.user.role.RoleDTO;
 
 import java.util.List;
 
@@ -11,8 +12,8 @@ public class ClienteDTO extends UsuarioDTO {
     private List<EnderecoDTO> enderecos;
     private List<TelefoneDTO> telefones;
 
-    public ClienteDTO(Long id, String email, String senha, String salt, String role,String nome) {
-        super(id, email, senha, salt, role, nome);
+    public ClienteDTO(Long id, String email, String senha, String salt, RoleDTO role, String nome) {
+        super(id, email, senha, nome, role);
     }
 
     public String getCpf() {

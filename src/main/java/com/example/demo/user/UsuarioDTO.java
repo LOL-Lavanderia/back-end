@@ -1,21 +1,19 @@
 package com.example.demo.user;
 
+import com.example.demo.user.role.RoleDTO;
+
 public class UsuarioDTO {
 
     private Long id;
-
-    private String nome;
     private String email;
+    private String nome;
     private String senha;
-    private String salt;
-    private String role;
-
+    private RoleDTO role;
     // Construtor
-    public UsuarioDTO(Long id, String email, String senha, String salt, String role, String nome) {
+    public UsuarioDTO(Long id, String email, String senha, String nome, RoleDTO role) {
         this.id = id;
         this.email = email;
         this.senha = senha;
-        this.salt = salt;
         this.role = role;
         this.nome = nome;
     }
@@ -45,19 +43,13 @@ public class UsuarioDTO {
         this.senha = senha;
     }
 
-    public String getSalt() {
-        return salt;
-    }
 
-    public void setSalt(String salt) {
-        this.salt = salt;
-    }
 
-    public String getRole() {
+    public RoleDTO getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(RoleDTO role) {
         this.role = role;
     }
 
@@ -73,11 +65,10 @@ public class UsuarioDTO {
     public String toString() {
         return "UsuarioDTO{" +
                 "id=" + id +
-                ", nome='" + nome + '\'' +
                 ", email='" + email + '\'' +
+                ", nome='" + nome + '\'' +
                 ", senha='" + senha + '\'' +
-                ", salt='" + salt + '\'' +
-                ", role='" + role + '\'' +
+                ", role=" + role +
                 '}';
     }
 }

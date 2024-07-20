@@ -1,12 +1,13 @@
 package com.example.demo.funcionario;
 
 import com.example.demo.user.UsuarioDTO;
+import com.example.demo.user.role.RoleDTO;
 
 public class FuncionarioDTO extends UsuarioDTO {
     private String dataNascimento;
 
-    public FuncionarioDTO(Long id, String email, String senha, String salt, String role, String nome) {
-        super(id, email, senha, salt, role, nome);
+    public FuncionarioDTO(Long id, String email, String senha,String nome, RoleDTO role) {
+        super(id, email, senha,nome, role) ;
     }
 
     // Getters e Setters

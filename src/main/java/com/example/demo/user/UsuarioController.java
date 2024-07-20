@@ -21,14 +21,10 @@ public class UsuarioController {
     private ObjectMapper objectMapper;
 
     @PostMapping
-    public ResponseEntity<UsuarioDTO>createUsuario(@RequestBody String usuarioJson) {
-        try {
-            UsuarioDTO usuarioDTO = parseUsuarioDTO(usuarioJson);
-            UsuarioDTO savedUsuario = usuarioService.saveUsuario(usuarioDTO);
-            return ResponseEntity.ok(savedUsuario);
-        } catch (IOException e) {
-            return ResponseEntity.badRequest().build();
-        }
+    public ResponseEntity<UsuarioDTO> createUsuario(@RequestBody UsuarioDTO usuarioDTO) {
+        // Salva o usuário usando o serviço e retorna a resposta
+        UsuarioDTO savedUsuario = usuarioService.saveUsuario(usuarioDTO);
+        return ResponseEntity.ok(savedUsuario);
     }
 
     private UsuarioDTO parseUsuarioDTO(String usuarioJson) throws IOException {
