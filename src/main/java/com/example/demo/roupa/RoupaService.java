@@ -1,13 +1,5 @@
 package com.example.demo.roupa;
-import com.example.demo.endereco.Endereco;
-import com.example.demo.endereco.EnderecoDTO;
-import com.example.demo.endereco.EnderecoService;
-import com.example.demo.utils.PasswordService;
-import com.example.demo.utils.ViaCepService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,35 +48,36 @@ public class RoupaService {
     @Transactional
     public void updateRoupa(Long id, String nome, String valor, String prazo) {
         Roupa roupaUpdate = roupaRepository.findById(id).orElseThrow(() -> new IllegalStateException("Roupa with id" + id + "not found."));
-        if(roupaUpdate.getNome().equals(nome)){
+        if(roupaUpdate.getName().equals(nome)){
             System.out.println("O nome já está atualizado");
         }
         else{
-            roupaUpdate.setNome(nome);
+            roupaUpdate.setName(nome);
         }
 
-        if(roupaUpdate.getValor().equals(valor)){
+        if(roupaUpdate.getPrice().equals(valor)){
             System.out.println("Valor já está atualizado.");
 
         }
         else{
-            roupaUpdate.setValor(valor);
+            roupaUpdate.setPrice(valor);
         }
 
-        if(roupaUpdate.getPrazo().equals(prazo)){
+        if(roupaUpdate.getTime().equals(prazo)){
             System.out.println("Valor já está atualizado.");
         }
         else{
-            roupaUpdate.setPrazo(prazo);
+            roupaUpdate.setTime(prazo);
         }
 
     }
 
     public Roupa defineRoupa(RoupaDTO roupaDTO){
         Roupa roupa = new Roupa();
-        roupa.setNome(roupaDTO.getNome());
-        roupa.setValor(roupaDTO.getValor());
-        roupa.setPrazo(roupaDTO.getPrazo());
+        roupa.setName(roupaDTO.getName());
+        roupa.setPrice(roupaDTO.getPrice());
+        roupa.setTime(roupaDTO.getTime());
+        roupa.setQuantity(roupa.getQuantity());
         return roupa;
 
     }

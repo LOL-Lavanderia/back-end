@@ -8,7 +8,6 @@ import com.example.demo.user.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,18 +43,18 @@ public class PedidoService {
 
     private Roupa convertToEntity(RoupaDTO roupaDTO) {
         Roupa roupa = new Roupa();
-        roupa.setNome(roupaDTO.getNome());
-        roupa.setValor(roupaDTO.getValor());
-        roupa.setQuantidade(roupaDTO.getQuantidade());
+        roupa.setName(roupaDTO.getName());
+        roupa.setPrice(roupaDTO.getPrice());
+        roupa.setQuantity(roupaDTO.getQuantity());
         return roupa;
     }
 
     private RoupaDTO convertToDTO(Roupa roupa) {
         RoupaDTO roupaDTO = new RoupaDTO();
         roupaDTO.setId(roupa.getId());
-        roupaDTO.setNome(roupa.getNome());
-        roupaDTO.setValor(roupa.getValor());
-        roupaDTO.setQuantidade(roupa.getQuantidade());
+        roupaDTO.setName(roupa.getName());
+        roupaDTO.setPrice(roupa.getPrice());
+        roupaDTO.setQuantity(roupa.getQuantity());
         return roupaDTO;
     }
 
