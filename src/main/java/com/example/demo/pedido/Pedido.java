@@ -4,6 +4,7 @@ import com.example.demo.cliente.Cliente;
 import com.example.demo.roupa.Roupa;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -28,8 +29,12 @@ public class Pedido {
     @Column(nullable = false)
     private LocalDate openDate;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    private List<Roupa> roupas;
+    @ManyToMany
+    @JoinTable(
+            name = "pedido_roupa",
+            joinColumns = @JoinColumn(name = "pedido_id"),
+            inverseJoinColumns = @JoinColumn(name = "roupa_id"))
+    private List<Roupa> roupas = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "cliente_id", nullable = false)

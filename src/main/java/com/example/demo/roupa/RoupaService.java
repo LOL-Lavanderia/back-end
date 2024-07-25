@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class RoupaService {
@@ -17,8 +18,20 @@ public class RoupaService {
         this.roupaRepository = roupaRepository;
     }
 
-    public List<Roupa> getRoupas() {
-        return roupaRepository.findAll();
+    public List<RoupaDTO> getRoupas() {
+        return roupaRepository.findAllActiveRoupas()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private RoupaDTO convertToDTO(Roupa roupa) {
+        RoupaDTO dto = new RoupaDTO();
+        dto.setId(roupa.getId());
+        dto.setName(roupa.getName());
+        dto.setPrice(roupa.getPrice());
+        dto.setTime(roupa.getTime());
+        return dto;
     }
 
     @Transactional
@@ -27,8 +40,12 @@ public class RoupaService {
         roupaRepository.save(roupa);
     }
 
+    @Transactional
     public void deleteRoupa(Long id) {
-        roupaRepository.deleteById(id);
+        Roupa roupa = roupaRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Roupa com id " + id + " não encontrada."));
+        roupa.setActive(false); // Marca a roupa como inativa em vez de excluir
+        roupaRepository.save(roupa);
     }
 
     public Roupa getRoupa(Long id) {
@@ -46,28 +63,28 @@ public class RoupaService {
         }
     }
     @Transactional
-    public void updateRoupa(Long id, String nome, String valor, String prazo) {
+    public void updateRoupa(Long id, RoupaDTO roupaDTO) {
         Roupa roupaUpdate = roupaRepository.findById(id).orElseThrow(() -> new IllegalStateException("Roupa with id" + id + "not found."));
-        if(roupaUpdate.getName().equals(nome)){
+        if(roupaUpdate.getName().equals(roupaDTO.getName())){
             System.out.println("O nome já está atualizado");
         }
         else{
-            roupaUpdate.setName(nome);
+            roupaUpdate.setName(roupaDTO.getName());
         }
 
-        if(roupaUpdate.getPrice().equals(valor)){
+        if(roupaUpdate.getPrice().equals(roupaDTO.getPrice())){
             System.out.println("Valor já está atualizado.");
 
         }
         else{
-            roupaUpdate.setPrice(valor);
+            roupaUpdate.setPrice(roupaDTO.getPrice());
         }
 
-        if(roupaUpdate.getTime().equals(prazo)){
+        if(roupaUpdate.getTime().equals(roupaDTO.getTime())){
             System.out.println("Valor já está atualizado.");
         }
         else{
-            roupaUpdate.setTime(prazo);
+            roupaUpdate.setTime(roupaDTO.getTime());
         }
 
     }
@@ -78,6 +95,7 @@ public class RoupaService {
         roupa.setPrice(roupaDTO.getPrice());
         roupa.setTime(roupaDTO.getTime());
         roupa.setQuantity(roupa.getQuantity());
+        roupa.setActive(true);
         return roupa;
 
     }

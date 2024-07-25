@@ -1,8 +1,10 @@
 package com.example.demo.roupa;
 
+import com.example.demo.pedido.Pedido;
 import jakarta.persistence.*;
 
 import java.math.BigInteger;
+import java.util.List;
 
 @Entity
 @Table
@@ -26,6 +28,27 @@ public class Roupa {
     private String time;
 
     private String quantity;
+
+    @ManyToMany(mappedBy = "roupas")
+    private List<Pedido> pedidos;
+
+    @Column(nullable = false)
+    private boolean active = true;
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+    public List<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(List<Pedido> pedidos) {
+        this.pedidos = pedidos;
+    }
 
     public String getQuantity() {
         return quantity;
@@ -66,6 +89,8 @@ public class Roupa {
     public void setTime(String time) {
         this.time = time;
     }
+
+
 
 
 }

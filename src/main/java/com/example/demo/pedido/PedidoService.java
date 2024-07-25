@@ -3,11 +3,13 @@ package com.example.demo.pedido;
 import com.example.demo.cliente.Cliente;
 import com.example.demo.roupa.Roupa;
 import com.example.demo.roupa.RoupaDTO;
+import com.example.demo.roupa.RoupaRepository;
 import com.example.demo.user.Usuario;
 import com.example.demo.user.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -15,6 +17,9 @@ public class PedidoService {
 
     @Autowired
     private PedidoRepository pedidoRepository;
+
+    @Autowired
+    private RoupaRepository roupaRepository;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -35,14 +40,20 @@ public class PedidoService {
         }
 
         pedido.setCliente((Cliente) usuario);
-        pedido.setRoupas(pedidoDTO.getRoupas().stream().map(this::convertToEntity).collect(Collectors.toList()));
 
+        List<Roupa> roupas = pedidoDTO.getRoupas().stream()
+                .map(roupaDTO -> roupaRepository.findById(roupaDTO.getId())
+                        .orElseThrow(() -> new RuntimeException("Roupa não encontrada")))
+                .collect(Collectors.toList());
+
+        pedido.setRoupas(roupas);
         pedido = pedidoRepository.save(pedido);
         return convertToDTO(pedido);
     }
 
     private Roupa convertToEntity(RoupaDTO roupaDTO) {
         Roupa roupa = new Roupa();
+        roupa.setId(roupaDTO.getId());
         roupa.setName(roupaDTO.getName());
         roupa.setPrice(roupaDTO.getPrice());
         roupa.setQuantity(roupaDTO.getQuantity());

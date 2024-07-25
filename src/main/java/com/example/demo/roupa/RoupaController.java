@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +32,7 @@ public class RoupaController {
 
     }
     @GetMapping
-    public List<Roupa> hello(){
+    public List<RoupaDTO> getRoupas(){
         return  roupaService.getRoupas();
     }
 
@@ -47,12 +48,10 @@ public class RoupaController {
 
     @PutMapping(path = "{roupaId}")
     public void updateRoupa(@PathVariable("roupaId") Long id,
-                              @RequestParam(required = false) String nome,
-                              @RequestParam(required = false) String valor,
-                              @RequestParam(required = false) String prazo
+                              @RequestBody(required = true) RoupaDTO roupaDTO
 
     ){
-        roupaService.updateRoupa(id, nome, valor, prazo);
+        roupaService.updateRoupa(id, roupaDTO);
 
     }
 
