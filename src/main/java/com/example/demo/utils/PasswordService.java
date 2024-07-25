@@ -13,6 +13,11 @@ public class PasswordService{
         return passwordEncoder.encode(password + salt);
     }
 
+    public boolean matches(String password, String salt, String hashedPassword){
+        String inputPassword = password + salt;
+        return passwordEncoder.matches(inputPassword, hashedPassword);
+    }
+
     public String generateSalt() {
         return BCrypt.gensalt();
     }

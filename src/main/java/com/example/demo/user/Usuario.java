@@ -23,6 +23,7 @@ public abstract class Usuario {
     @Column(nullable = false)
     private String salt;
 
+
     public Long getId() {
         return id;
     }

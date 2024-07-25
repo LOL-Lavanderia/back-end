@@ -1,15 +1,13 @@
 package com.example.demo.user;
 
-import com.example.demo.cliente.ClienteDTO;
-import com.example.demo.funcionario.FuncionarioDTO;
-import com.example.demo.user.UsuarioDTO;
-import com.example.demo.user.UsuarioService;
+import com.example.demo.user.auth.AuthDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioController {
@@ -26,18 +24,14 @@ public class UsuarioController {
         UsuarioDTO savedUsuario = usuarioService.saveUsuario(usuarioDTO);
         return ResponseEntity.ok(savedUsuario);
     }
-
-    private UsuarioDTO parseUsuarioDTO(String usuarioJson) throws IOException {
-        // Primeiro, mapear para um UsuarioDTO genérico para checar o role
-        UsuarioDTO tempUsuarioDTO = objectMapper.readValue(usuarioJson, UsuarioDTO.class);
-
-        // Agora, mapear para o tipo específico com base no role
-        if ("client".equals(tempUsuarioDTO.getRole())) {
-            return objectMapper.readValue(usuarioJson, ClienteDTO.class);
-        } else if ("employee".equals(tempUsuarioDTO.getRole())) {
-            return objectMapper.readValue(usuarioJson, FuncionarioDTO.class);
+    @PostMapping("/login")
+    public ResponseEntity<UsuarioDTO> login(@RequestBody AuthDTO authDTO) {
+        UsuarioDTO usuarioDTO = usuarioService.authenticate(authDTO);
+        if (usuarioDTO != null) {
+            return ResponseEntity.ok(usuarioDTO);
         } else {
-            throw new IllegalArgumentException("Invalid role: " + tempUsuarioDTO.getRole());
+            return ResponseEntity.status(401).build();
         }
     }
+
 }

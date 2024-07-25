@@ -13,7 +13,7 @@ import java.util.Map;
 
 @CrossOrigin
 @RestController
-@RequestMapping(path= "api/v1/roupas")
+@RequestMapping(path= "/api/roupas")
 public class RoupaController {
     @Autowired
     private RoupaService roupaService;

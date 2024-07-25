@@ -18,6 +18,10 @@ public class UsuarioDTO {
         this.nome = nome;
     }
 
+    public UsuarioDTO() {
+
+    }
+
     // Getters e Setters
     public Long getId() {
         return id;
