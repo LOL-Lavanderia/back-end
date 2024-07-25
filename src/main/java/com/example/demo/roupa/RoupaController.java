@@ -36,6 +36,11 @@ public class RoupaController {
         return  roupaService.getRoupas();
     }
 
+    @GetMapping("/ativas")
+    public List<RoupaDTO> getRoupasAtivas(){
+        return  roupaService.getRoupasAtivas();
+    }
+
     @PostMapping
     public void registerNewRoupa(@RequestBody RoupaDTO roupaDTO){
         roupaService.addNewRoupa(roupaDTO);

@@ -19,6 +19,12 @@ public class RoupaService {
     }
 
     public List<RoupaDTO> getRoupas() {
+        return roupaRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<RoupaDTO> getRoupasAtivas() {
         return roupaRepository.findAllActiveRoupas()
                 .stream()
                 .map(this::convertToDTO)
@@ -64,28 +70,19 @@ public class RoupaService {
     }
     @Transactional
     public void updateRoupa(Long id, RoupaDTO roupaDTO) {
-        Roupa roupaUpdate = roupaRepository.findById(id).orElseThrow(() -> new IllegalStateException("Roupa with id" + id + "not found."));
-        if(roupaUpdate.getName().equals(roupaDTO.getName())){
-            System.out.println("O nome já está atualizado");
-        }
-        else{
-            roupaUpdate.setName(roupaDTO.getName());
-        }
+        //Oculta roupa antiga
+        Roupa roupaAntiga = roupaRepository.findById(id)
+                .orElseThrow(() -> new IllegalStateException("Roupa com id " + id + " não encontrada."));
+        roupaAntiga.setActive(false);
+        roupaRepository.save(roupaAntiga);
 
-        if(roupaUpdate.getPrice().equals(roupaDTO.getPrice())){
-            System.out.println("Valor já está atualizado.");
-
-        }
-        else{
-            roupaUpdate.setPrice(roupaDTO.getPrice());
-        }
-
-        if(roupaUpdate.getTime().equals(roupaDTO.getTime())){
-            System.out.println("Valor já está atualizado.");
-        }
-        else{
-            roupaUpdate.setTime(roupaDTO.getTime());
-        }
+        // Cria uma nova roupa com os dados atualizados
+        Roupa novaRoupa = new Roupa();
+        novaRoupa.setName(roupaDTO.getName());
+        novaRoupa.setPrice(roupaDTO.getPrice());
+        novaRoupa.setTime(roupaDTO.getTime());
+        novaRoupa.setQuantity(roupaAntiga.getQuantity());
+        roupaRepository.save(novaRoupa);
 
     }
 
@@ -99,6 +96,7 @@ public class RoupaService {
         return roupa;
 
     }
+
 
 
 }
