@@ -1,5 +1,4 @@
 package com.example.demo.endereco;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -24,7 +23,7 @@ public class Endereco {
     @Column
     private String bairro;
     @Column
-    private String cidade;
+    private String localidade;
 
     @Column
     private String numero;
@@ -40,7 +39,7 @@ public class Endereco {
                 "\n" + "Logradouro: " + logradouro +
                 "\n" + "numero: " + numero +
                 "\n"+ "Bairro=" + bairro +
-                "\n" + "Localidade: " + cidade +
+                "\n" + "Localidade: " + localidade +
                 "\n" + "Uf: " + uf;
     }
 
@@ -83,12 +82,12 @@ public class Endereco {
         this.bairro = bairro;
     }
 
-    public String getCidade() {
-        return cidade;
+    public String getLocalidade() {
+        return localidade;
     }
 
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
+    public void setLocalidade(String localidade) {
+        this.localidade = localidade;
     }
 
     public String getUf() {

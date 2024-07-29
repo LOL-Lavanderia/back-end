@@ -12,11 +12,10 @@ import com.example.demo.utils.PasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -54,7 +53,7 @@ public class UsuarioService {
         enderecoDTO.setLogradouro("Rua Mock");
         enderecoDTO.setNumero("123");
         enderecoDTO.setBairro("Bairro Mock");
-        enderecoDTO.setCidade("Cidade Mock");
+        enderecoDTO.setLocalidade("Cidade Mock");
         enderecoDTO.setCep("12345678");
 
         clienteDTO.setEnderecos(Collections.singletonList(enderecoDTO));
@@ -96,7 +95,7 @@ public class UsuarioService {
                     endereco.setLogradouro(enderecoDTO.getLogradouro());
                     endereco.setNumero(enderecoDTO.getNumero());
                     endereco.setBairro(enderecoDTO.getBairro());
-                    endereco.setCidade(enderecoDTO.getCidade());
+                    endereco.setLocalidade(enderecoDTO.getLocalidade());
                     endereco.setCep(enderecoDTO.getCep());
                     endereco.setTipo(enderecoDTO.getTipo());
                     return endereco;
@@ -121,7 +120,7 @@ public class UsuarioService {
                 funcionario.setPassword(senhaCriptografada);
                 funcionario.setSalt(salt);
 
-                funcionario.setDataNascimento(LocalDate.parse(funcionarioDTO.getDataNascimento()));
+                funcionario.setDataNascimento(funcionarioDTO.getBirthDate());
                 break;
 
             default:
@@ -161,6 +160,7 @@ public class UsuarioService {
         if (usuario instanceof Funcionario) {
             // Define a role como "employee"
             roleDTO.setRole("employee");
+            roleDTO.setBirthDate(((Funcionario) usuario).getDataNascimento());
             usuarioDTO.setRole(roleDTO);
         } else if (usuario instanceof Cliente) {
             // Define a role como "client"
@@ -170,5 +170,38 @@ public class UsuarioService {
 
         // Adicionar outros campos conforme necessário
         return usuarioDTO;
+    }
+
+    public List<UsuarioDTO> getAllUsuarios() {
+        return usuarioRepository.findAll().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+    public UsuarioDTO updateUsuario(Long id, UsuarioDTO usuarioDTO) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        // Atualiza os campos básicos do usuário
+        usuario.setEmail(usuarioDTO.getEmail());
+        usuario.setName(usuarioDTO.getNome());
+
+        // Verifica se a senha foi fornecida para atualização
+        if (usuarioDTO.getSenha() != null && !usuarioDTO.getSenha().isEmpty()) {
+            String salt = passwordService.generateSalt();
+            String hashedPassword = passwordService.hashPasswordWithSalt(usuarioDTO.getSenha(), salt);
+            usuario.setPassword(hashedPassword);
+            usuario.setSalt(salt);
+        }
+
+        // Verifica se o usuário é um Funcionario para atualizar campos específicos
+        if (usuario instanceof Funcionario) {
+            ((Funcionario) usuario).setDataNascimento(usuarioDTO.getRole().getBirthDate());
+        }
+
+        // Salva o usuário atualizado
+        Usuario updatedUsuario = usuarioRepository.save(usuario);
+
+        // Retorna o usuário atualizado como DTO
+        return convertToDTO(updatedUsuario);
     }
 }

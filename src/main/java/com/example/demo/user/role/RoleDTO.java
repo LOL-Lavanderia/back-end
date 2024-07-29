@@ -3,6 +3,7 @@ package com.example.demo.user.role;
 import com.example.demo.endereco.EnderecoDTO;
 import com.example.demo.telefone.TelefoneDTO;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class RoleDTO {
@@ -10,7 +11,7 @@ public class RoleDTO {
     private String cpf; // Para "client"
     private List<EnderecoDTO> enderecos; // Para "client"
     private List<TelefoneDTO> telefones; // Para "client"
-    private String dataNascimento; // Para "employee"
+    private LocalDate birthDate; // Para "employee"
 
     public String getRole() {
         return role;
@@ -44,12 +45,12 @@ public class RoleDTO {
         this.telefones = telefones;
     }
 
-    public String getDataNascimento() {
-        return dataNascimento;
+    public LocalDate getBirthDate() {
+        return birthDate;
     }
 
-    public void setDataNascimento(String dataNascimento) {
-        this.dataNascimento = dataNascimento;
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
     }
 
     @Override
@@ -59,7 +60,7 @@ public class RoleDTO {
                 ", cpf='" + cpf + '\'' +
                 ", enderecos=" + enderecos +
                 ", telefones=" + telefones +
-                ", dataNascimento='" + dataNascimento + '\'' +
+                ", dataNascimento='" + birthDate + '\'' +
                 '}';
     }
 }

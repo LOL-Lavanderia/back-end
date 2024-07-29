@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -34,4 +35,19 @@ public class UsuarioController {
         }
     }
 
+    @GetMapping
+    public ResponseEntity<List<UsuarioDTO>> getAllUsuarios() {
+        List<UsuarioDTO> usuarios = usuarioService.getAllUsuarios();
+        return ResponseEntity.ok(usuarios);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<UsuarioDTO> updateUser(@PathVariable Long id, @RequestBody UsuarioDTO usuarioDTO) {
+        UsuarioDTO updatedUsuario = usuarioService.updateUsuario(id, usuarioDTO);
+        if (updatedUsuario != null) {
+            return ResponseEntity.ok(updatedUsuario);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
