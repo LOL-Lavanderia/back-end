@@ -27,7 +27,7 @@ public class RoupaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Roupa> getRoupaById(@PathVariable("id")Long id){
-        Roupa roupa = roupaService.getRoupa(id);
+        Roupa roupa = roupaService.getRoupaById(id);
         return ResponseEntity.ok(roupa);
 
     }

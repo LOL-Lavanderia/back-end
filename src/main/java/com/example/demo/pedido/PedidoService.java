@@ -8,6 +8,7 @@ import com.example.demo.user.Usuario;
 import com.example.demo.user.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,20 +25,25 @@ public class PedidoService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
+    @Autowired
+    private PedidoRoupaRepository pedidoRoupaRepository; // Novo repositório para PedidoRoupa
+
     public List<PedidoDTO> getAllPedidos() {
         return pedidoRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+
     public List<PedidoDTO> getOpenPedidos() {
         return pedidoRepository.findByStatus("Em Aberto").stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+
     public List<PedidoDTO> getPedidosByClienteId(Long clienteId) {
-    return pedidoRepository.findByClienteId(clienteId).stream()
-            .map(this::convertToDTO)
-            .collect(Collectors.toList());
+        return pedidoRepository.findByClienteId(clienteId).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     public PedidoDTO getPedidoById(Long id) {
@@ -47,19 +53,17 @@ public class PedidoService {
     }
 
     public PedidoDTO getPedidoByClienteAndPedidoId(Long clienteId, Long pedidoId) {
-    // Busca o pedido pelo ID do pedido
-    Pedido pedido = pedidoRepository.findById(pedidoId)
-            .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
-    
-    // Verifica se o pedido pertence ao cliente especificado
-    if (!pedido.getCliente().getId().equals(clienteId)) {
-        throw new RuntimeException("Pedido não pertence ao cliente especificado");
-    }
-    
-    // Converte o pedido para DTO e retorna
-    return convertToDTO(pedido);
-}
+        Pedido pedido = pedidoRepository.findById(pedidoId)
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
 
+        if (!pedido.getCliente().getId().equals(clienteId)) {
+            throw new RuntimeException("Pedido não pertence ao cliente especificado");
+        }
+
+        return convertToDTO(pedido);
+    }
+
+    @Transactional
     public PedidoDTO savePedido(PedidoDTO pedidoDTO) {
         Pedido pedido = new Pedido();
         pedido.setTime(pedidoDTO.getTime());
@@ -77,16 +81,26 @@ public class PedidoService {
 
         pedido.setCliente((Cliente) usuario);
 
-        List<Roupa> roupas = pedidoDTO.getRoupas().stream()
-                .map(roupaDTO -> roupaRepository.findById(roupaDTO.getId())
-                        .orElseThrow(() -> new RuntimeException("Roupa não encontrada")))
-                .collect(Collectors.toList());
-
-        pedido.setRoupas(roupas);
+        // Salvar o pedido primeiro para obter o ID gerado
         pedido = pedidoRepository.save(pedido);
+
+        // Adicionar roupas ao pedido
+        for (RoupaDTO roupaDTO : pedidoDTO.getRoupas()) {
+            Roupa roupa = roupaRepository.findById(roupaDTO.getId())
+                    .orElseThrow(() -> new RuntimeException("Roupa não encontrada"));
+
+            PedidoRoupa pedidoRoupa = new PedidoRoupa();
+            pedidoRoupa.setPedido(pedido);
+            pedidoRoupa.setRoupa(roupa);
+            pedidoRoupa.setQuantidade(roupaDTO.getQuantity());
+
+            pedidoRoupaRepository.save(pedidoRoupa);
+        }
+
         return convertToDTO(pedido);
     }
 
+    @Transactional
     public PedidoDTO updatePedido(Long id, PedidoDTO pedidoDTO) {
         Pedido pedido = pedidoRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
@@ -106,32 +120,34 @@ public class PedidoService {
 
         pedido.setCliente((Cliente) usuario);
 
-        List<Roupa> roupas = pedidoDTO.getRoupas().stream()
-                .map(roupaDTO -> roupaRepository.findById(roupaDTO.getId())
-                        .orElseThrow(() -> new RuntimeException("Roupa não encontrada")))
-                .collect(Collectors.toList());
+        // Remover todas as roupas antigas associadas ao pedido
+        pedidoRoupaRepository.deleteByPedidoId(id);
 
-        pedido.setRoupas(roupas);
-        pedido = pedidoRepository.save(pedido);
+        // Adicionar roupas atualizadas ao pedido
+        for (RoupaDTO roupaDTO : pedidoDTO.getRoupas()) {
+            Roupa roupa = roupaRepository.findById(roupaDTO.getId())
+                    .orElseThrow(() -> new RuntimeException("Roupa não encontrada"));
+
+            PedidoRoupa pedidoRoupa = new PedidoRoupa();
+            pedidoRoupa.setPedido(pedido);
+            pedidoRoupa.setRoupa(roupa);
+            pedidoRoupa.setQuantidade(roupaDTO.getQuantity());
+
+            pedidoRoupaRepository.save(pedidoRoupa);
+        }
+
         return convertToDTO(pedido);
     }
 
+    @Transactional
     public boolean deletePedido(Long id) {
         if (pedidoRepository.existsById(id)) {
+            pedidoRoupaRepository.deleteByPedidoId(id); // Remover relações de PedidoRoupa
             pedidoRepository.deleteById(id);
             return true;
         } else {
             return false;
         }
-    }
-
-    private RoupaDTO convertToDTO(Roupa roupa) {
-        RoupaDTO roupaDTO = new RoupaDTO();
-        roupaDTO.setId(roupa.getId());
-        roupaDTO.setName(roupa.getName());
-        roupaDTO.setPrice(roupa.getPrice());
-        roupaDTO.setQuantity(roupa.getQuantity());
-        return roupaDTO;
     }
 
     private PedidoDTO convertToDTO(Pedido pedido) {
@@ -143,7 +159,20 @@ public class PedidoService {
         pedidoDTO.setCloseDate(pedido.getCloseDate());
         pedidoDTO.setOpenDate(pedido.getOpenDate());
         pedidoDTO.setClienteId(pedido.getCliente().getId());
-        pedidoDTO.setRoupas(pedido.getRoupas().stream().map(this::convertToDTO).collect(Collectors.toList()));
+
+        List<RoupaDTO> roupasDTO = pedido.getPedidoRoupas().stream()
+                .map(pr -> {
+                    RoupaDTO roupaDTO = new RoupaDTO();
+                    roupaDTO.setId(pr.getRoupa().getId());
+                    roupaDTO.setName(pr.getRoupa().getName());
+                    roupaDTO.setPrice(pr.getRoupa().getPrice());
+                    roupaDTO.setTime(pr.getRoupa().getTime());
+                    roupaDTO.setQuantity(pr.getQuantidade());
+                    return roupaDTO;
+                })
+                .collect(Collectors.toList());
+
+        pedidoDTO.setRoupas(roupasDTO);
         return pedidoDTO;
     }
 }

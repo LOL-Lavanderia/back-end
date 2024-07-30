@@ -40,6 +40,17 @@ public class Pedido {
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
+    @OneToMany(mappedBy = "pedido")
+    private List<PedidoRoupa> pedidoRoupas = new ArrayList<>();
+
+    public List<PedidoRoupa> getPedidoRoupas() {
+        return pedidoRoupas;
+    }
+
+    public void setPedidoRoupas(List<PedidoRoupa> pedidoRoupas) {
+        this.pedidoRoupas = pedidoRoupas;
+    }
+
     public Long getId() {
         return id;
     }

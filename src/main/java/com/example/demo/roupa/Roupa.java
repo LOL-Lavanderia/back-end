@@ -1,9 +1,11 @@
 package com.example.demo.roupa;
 
 import com.example.demo.pedido.Pedido;
+import com.example.demo.pedido.PedidoRoupa;
 import jakarta.persistence.*;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -34,6 +36,17 @@ public class Roupa {
 
     @Column(nullable = false)
     private boolean active = true;
+
+    @OneToMany(mappedBy = "roupa")
+    private List<PedidoRoupa> pedidoRoupas = new ArrayList<>();
+
+    public List<PedidoRoupa> getPedidoRoupas() {
+        return pedidoRoupas;
+    }
+
+    public void setPedidoRoupas(List<PedidoRoupa> pedidoRoupas) {
+        this.pedidoRoupas = pedidoRoupas;
+    }
 
     public boolean isActive() {
         return active;
