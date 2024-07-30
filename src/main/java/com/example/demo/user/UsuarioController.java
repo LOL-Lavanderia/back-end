@@ -1,7 +1,11 @@
 package com.example.demo.user;
 
 import com.example.demo.user.auth.AuthDTO;
+import com.example.demo.utils.exceptions.CpfJaCadastradoException;
+import com.example.demo.utils.exceptions.EmailJaCadastradoException;
+import com.example.demo.utils.exceptions.ErrorResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,10 +24,17 @@ public class UsuarioController {
     private ObjectMapper objectMapper;
 
     @PostMapping
-    public ResponseEntity<UsuarioDTO> createUsuario(@RequestBody UsuarioDTO usuarioDTO) {
-        // Salva o usuário usando o serviço e retorna a resposta
-        UsuarioDTO savedUsuario = usuarioService.saveUsuario(usuarioDTO);
-        return ResponseEntity.ok(savedUsuario);
+    public ResponseEntity<?> createUsuario(@RequestBody UsuarioDTO usuarioDTO) {
+        try {
+            UsuarioDTO savedUsuario = usuarioService.saveUsuario(usuarioDTO);
+            return ResponseEntity.ok(savedUsuario);
+        } catch (CpfJaCadastradoException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+        } catch (EmailJaCadastradoException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("Erro interno do servidor"));
+        }
     }
     @PostMapping("/login")
     public ResponseEntity<UsuarioDTO> login(@RequestBody AuthDTO authDTO) {

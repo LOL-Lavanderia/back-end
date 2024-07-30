@@ -9,6 +9,8 @@ import com.example.demo.telefone.TelefoneDTO;
 import com.example.demo.user.auth.AuthDTO;
 import com.example.demo.user.role.RoleDTO;
 import com.example.demo.utils.PasswordService;
+import com.example.demo.utils.exceptions.CpfJaCadastradoException;
+import com.example.demo.utils.exceptions.EmailJaCadastradoException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -74,62 +76,45 @@ public class UsuarioService {
     }
 
     public UsuarioDTO saveUsuario(UsuarioDTO usuarioDTO) {
+        // Verifica se o e-mail já existe
+        if (usuarioRepository.existsByCpf(usuarioDTO.getRole().getCpf())) {
+            throw new CpfJaCadastradoException("CPF já cadastrado");
+        }
+        if (usuarioRepository.existsByEmail(usuarioDTO.getEmail())) {
+            throw new EmailJaCadastradoException("E-mail já cadastrado");
+        }
         Usuario usuario;
-
         switch (usuarioDTO.getRole().getRole()) {
             case "client":
                 usuario = new Cliente();
-                Cliente cliente = (Cliente) usuario;
-                RoleDTO clienteDTO = usuarioDTO.getRole();
-
-                String senhaGerada = gerarSenhaAleatoria();
-                String salt = passwordService.generateSalt();
-                String senhaCriptografada = hashSenha(senhaGerada, salt);
-
-                cliente.setPassword(senhaCriptografada);
-                cliente.setSalt(salt);
-
-                cliente.setCpf(clienteDTO.getCpf());
-                cliente.setEndereco(clienteDTO.getEnderecos().stream().map(enderecoDTO -> {
-                    Endereco endereco = new Endereco();
-                    endereco.setLogradouro(enderecoDTO.getLogradouro());
-                    endereco.setNumero(enderecoDTO.getNumero());
-                    endereco.setBairro(enderecoDTO.getBairro());
-                    endereco.setLocalidade(enderecoDTO.getLocalidade());
-                    endereco.setCep(enderecoDTO.getCep());
-                    endereco.setTipo(enderecoDTO.getTipo());
-                    return endereco;
-                }).collect(Collectors.toList()));
-                cliente.setTelefone(clienteDTO.getTelefones().stream().map(telefoneDTO -> {
-                    Telefone telefone = new Telefone();
-                    telefone.setNumero(telefoneDTO.getNumero());
-                    return telefone;
-                }).collect(Collectors.toList()));
-
-                enviarEmail(usuarioDTO.getEmail(), senhaGerada);
                 break;
-
             case "employee":
                 usuario = new Funcionario();
-                Funcionario funcionario = (Funcionario) usuario;
-                RoleDTO funcionarioDTO = usuarioDTO.getRole();
-
-                salt = passwordService.generateSalt();
-                senhaCriptografada = hashSenha(usuarioDTO.getSenha(), salt);
-
-                funcionario.setPassword(senhaCriptografada);
-                funcionario.setSalt(salt);
-
-                funcionario.setDataNascimento(funcionarioDTO.getBirthDate());
                 break;
-
             default:
                 throw new IllegalArgumentException("Invalid role");
         }
 
+        // Configuração do usuário com base no DTO
         usuario.setEmail(usuarioDTO.getEmail());
         usuario.setName(usuarioDTO.getNome());
+        String salt = passwordService.generateSalt();
+        String senhaCriptografada = passwordService.hashPasswordWithSalt(usuarioDTO.getSenha(), salt);
+        usuario.setPassword(senhaCriptografada);
+        usuario.setSalt(salt);
 
+        // Configuração específica para Cliente
+        if (usuario instanceof Cliente) {
+            Cliente cliente = (Cliente) usuario;
+            cliente.setCpf(usuarioDTO.getRole().getCpf());
+            // Outras configurações específicas do cliente...
+        } else if (usuario instanceof Funcionario) {
+            Funcionario funcionario = (Funcionario) usuario;
+            funcionario.setDataNascimento(usuarioDTO.getRole().getBirthDate());
+            // Outras configurações específicas do funcionário...
+        }
+
+        // Salva o usuário
         usuario = usuarioRepository.save(usuario);
         usuarioDTO.setId(usuario.getId());
         return usuarioDTO;
