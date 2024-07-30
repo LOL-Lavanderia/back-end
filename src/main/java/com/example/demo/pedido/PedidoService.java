@@ -29,11 +29,15 @@ public class PedidoService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
-
     public List<PedidoDTO> getOpenPedidos() {
         return pedidoRepository.findByStatus("Em Aberto").stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+    public List<PedidoDTO> getPedidosByClienteId(Long clienteId) {
+    return pedidoRepository.findByClienteId(clienteId).stream()
+            .map(this::convertToDTO)
+            .collect(Collectors.toList());
     }
 
     public PedidoDTO getPedidoById(Long id) {
@@ -41,6 +45,20 @@ public class PedidoService {
                 .map(this::convertToDTO)
                 .orElse(null);
     }
+
+    public PedidoDTO getPedidoByClienteAndPedidoId(Long clienteId, Long pedidoId) {
+    // Busca o pedido pelo ID do pedido
+    Pedido pedido = pedidoRepository.findById(pedidoId)
+            .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+    
+    // Verifica se o pedido pertence ao cliente especificado
+    if (!pedido.getCliente().getId().equals(clienteId)) {
+        throw new RuntimeException("Pedido não pertence ao cliente especificado");
+    }
+    
+    // Converte o pedido para DTO e retorna
+    return convertToDTO(pedido);
+}
 
     public PedidoDTO savePedido(PedidoDTO pedidoDTO) {
         Pedido pedido = new Pedido();

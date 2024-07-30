@@ -20,14 +20,22 @@ public class PedidoController {
         return new ResponseEntity<>(pedidos, HttpStatus.OK);
     }
 
-    
-
     @GetMapping(params = "status=Em Aberto")
     public ResponseEntity<List<PedidoDTO>> listOpenOrders() {
         List<PedidoDTO> openPedidos = pedidoService.getOpenPedidos();
         return new ResponseEntity<>(openPedidos, HttpStatus.OK);
     }
 
+    @GetMapping("/by-cliente/{clienteId}")
+    public ResponseEntity<List<PedidoDTO>> getPedidosByClienteId(@PathVariable Long clienteId) {
+            List<PedidoDTO> pedidos;
+        if (clienteId != null) {
+            pedidos = pedidoService.getPedidosByClienteId(clienteId);
+            return new ResponseEntity<>(pedidos, HttpStatus.OK);
+        } else {
+           return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
     @GetMapping("/{id}")
     public ResponseEntity<PedidoDTO> getPedidobyId(@PathVariable Long id) {
         PedidoDTO pedido = pedidoService.getPedidoById(id);
@@ -37,6 +45,17 @@ public class PedidoController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/by-cliente/{clienteId}/pedido/{pedidoId}")
+    public ResponseEntity<PedidoDTO> getPedidoByClienteAndPedidoId(@PathVariable Long clienteId, @PathVariable Long pedidoId) {
+        // Aqui você chama o serviço para buscar o pedido com base nos dois IDs
+        PedidoDTO pedido = pedidoService.getPedidoByClienteAndPedidoId(clienteId, pedidoId);
+        if (pedido != null) {
+            return new ResponseEntity<>(pedido, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+}
 
     @PostMapping
     public ResponseEntity<PedidoDTO> createPedido(@RequestBody PedidoDTO pedidoDTO) {
