@@ -4,6 +4,7 @@ import com.example.demo.cliente.Cliente;
 import com.example.demo.roupa.Roupa;
 import jakarta.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,10 +25,10 @@ public class Pedido {
     private double value;
 
     @Column(nullable = false)
-    private LocalDate closeDate;
+    private LocalDateTime closeDate;
 
     @Column(nullable = false)
-    private LocalDate openDate;
+    private LocalDateTime openDate;
 
     @ManyToMany
     @JoinTable(
@@ -83,19 +84,19 @@ public class Pedido {
         this.value = value;
     }
 
-    public LocalDate getCloseDate() {
+    public LocalDateTime getCloseDate() {
         return closeDate;
     }
 
-    public void setCloseDate(LocalDate closeDate) {
+    public void setCloseDate(LocalDateTime closeDate) {
         this.closeDate = closeDate;
     }
 
-    public LocalDate getOpenDate() {
+    public LocalDateTime getOpenDate() {
         return openDate;
     }
 
-    public void setOpenDate(LocalDate openDate) {
+    public void setOpenDate(LocalDateTime openDate) {
         this.openDate = openDate;
     }
 

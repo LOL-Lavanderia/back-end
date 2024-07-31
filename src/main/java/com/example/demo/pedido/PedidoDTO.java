@@ -3,6 +3,7 @@ package com.example.demo.pedido;
 import com.example.demo.roupa.RoupaDTO;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class PedidoDTO {
@@ -10,8 +11,8 @@ public class PedidoDTO {
     private long time;
     private String status;
     private double value;
-    private LocalDate closeDate;
-    private LocalDate openDate;
+    private LocalDateTime closeDate;
+    private LocalDateTime openDate;
     private List<RoupaDTO> roupas;
     private Long clienteId;
 
@@ -47,19 +48,19 @@ public class PedidoDTO {
         this.value = value;
     }
 
-    public LocalDate getCloseDate() {
+    public LocalDateTime getCloseDate() {
         return closeDate;
     }
 
-    public void setCloseDate(LocalDate closeDate) {
+    public void setCloseDate(LocalDateTime closeDate) {
         this.closeDate = closeDate;
     }
 
-    public LocalDate getOpenDate() {
+    public LocalDateTime getOpenDate() {
         return openDate;
     }
 
-    public void setOpenDate(LocalDate openDate) {
+    public void setOpenDate(LocalDateTime openDate) {
         this.openDate = openDate;
     }
 
