@@ -189,4 +189,12 @@ public class UsuarioService {
         // Retorna o usuário atualizado como DTO
         return convertToDTO(updatedUsuario);
     }
+
+    public void deleteUsuario(Long id) {
+        if (!usuarioRepository.existsById(id)) {
+            throw new RuntimeException("Usuário não encontrado");
+        }
+        usuarioRepository.deleteById(id);
+    }
+
 }
