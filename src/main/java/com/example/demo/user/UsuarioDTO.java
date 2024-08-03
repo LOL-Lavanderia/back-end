@@ -22,6 +22,9 @@ public class UsuarioDTO {
 
     }
 
+    public UsuarioDTO(UsuarioDTO usuarioDTO) {
+    }
+
     // Getters e Setters
     public Long getId() {
         return id;

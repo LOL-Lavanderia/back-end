@@ -16,6 +16,17 @@ public class PedidoDTO {
     private List<RoupaDTO> roupas;
     private Long clienteId;
 
+    public PedidoDTO(Long id, LocalDateTime openDate, LocalDateTime closeDate, Double value) {
+        this.id = id;
+        this.openDate = openDate;
+        this.closeDate = closeDate;
+        this.value = value;
+    }
+
+    public PedidoDTO(){
+
+    }
+
     public Long getId() {
         return id;
     }

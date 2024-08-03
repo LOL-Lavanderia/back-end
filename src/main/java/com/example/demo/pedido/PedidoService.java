@@ -1,6 +1,9 @@
 package com.example.demo.pedido;
 
 import com.example.demo.cliente.Cliente;
+import com.example.demo.cliente.ClienteDTO;
+import com.example.demo.cliente.ClienteService;
+import com.example.demo.relatorios.RelatorioReceitaResponse;
 import com.example.demo.roupa.Roupa;
 import com.example.demo.roupa.RoupaDTO;
 import com.example.demo.roupa.RoupaRepository;
@@ -10,7 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +34,7 @@ public class PedidoService {
 
     @Autowired
     private PedidoRoupaRepository pedidoRoupaRepository; // Novo repositório para PedidoRoupa
+
 
     public List<PedidoDTO> getAllPedidos() {
         return pedidoRepository.findAll().stream()
@@ -175,4 +183,42 @@ public class PedidoService {
         pedidoDTO.setRoupas(roupasDTO);
         return pedidoDTO;
     }
+    public RelatorioReceitaResponse calcularReceitaEntreDatas(LocalDateTime dataInicio, LocalDateTime dataFim) {
+        List<PedidoReceita> pedidosResumidos = pedidoRepository.findByOpenDateBetween(dataInicio, dataFim);
+        Double totalReceita = pedidosResumidos.stream()
+                .mapToDouble(PedidoReceita::getValue)
+                .sum();
+
+        List<PedidoDTO> pedidosDTO = pedidosResumidos.stream()
+                .map(projecao -> new PedidoDTO(projecao.getId(), projecao.getOpenDate(), projecao.getCloseDate(), projecao.getValue()))
+                .collect(Collectors.toList());
+
+        RelatorioReceitaResponse response = new RelatorioReceitaResponse();
+        response.setPedidos(pedidosDTO);
+        response.setTotalReceita(totalReceita);
+
+        return response;
+    }
+
+//    public List<ClienteDTO> listarTodosOsClientes() {
+//        // Exemplo de implementação
+//        // Esta função deve ser ajustada para refletir a estrutura real do seu banco de dados e modelo de negócios
+//        List<Cliente> clientes = pedidoRepository.findAllClientes();
+//        List<ClienteDTO> collect = clientes.stream()
+//                .map(this::this.clienteService.convertToDTO)
+//                .collect(Collectors.toList());
+//        return collect;
+//    }
+//
+//    public List<ClienteDTO> listarTresClientesComMaiorReceita() {
+//        // Exemplo de implementação
+//        // Esta função deve ser ajustada para refletir a estrutura real do seu banco de dados e modelo de negócios
+//        List<Cliente> clientes = pedidoRepository.findAllClientes();
+//        return clientes.stream()
+//                .sorted((c1, c2) -> c2.getReceita().compareTo(c1.getReceita()))
+//                .limit(3)
+//                .map(this::convertToDTO)
+//                .collect(Collectors.toList());
+//    }
+
 }
