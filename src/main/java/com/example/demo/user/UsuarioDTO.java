@@ -18,11 +18,14 @@ public class UsuarioDTO {
         this.nome = nome;
     }
 
-    public UsuarioDTO() {
-
+    public UsuarioDTO(Long id, String name, String email) {
+        this.id = id;
+        this.nome = name;
+        this.email = email;
     }
 
-    public UsuarioDTO(UsuarioDTO usuarioDTO) {
+    public UsuarioDTO() {
+
     }
 
     // Getters e Setters

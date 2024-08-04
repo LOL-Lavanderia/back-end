@@ -15,11 +15,9 @@ public class ClienteDTO extends UsuarioDTO {
     public ClienteDTO() {}
 
     // Construtor completo
-    public ClienteDTO(UsuarioDTO usuarioDTO, String cpf, List<EnderecoDTO> enderecos, List<TelefoneDTO> telefones) {
-        super(usuarioDTO);
-        this.cpf = cpf;
-        this.enderecos = enderecos;
-        this.telefones = telefones;
+
+    public ClienteDTO(UsuarioDTO usuarioDTO) {
+        super(usuarioDTO.getId(), usuarioDTO.getNome(), usuarioDTO.getEmail());
     }
 
     // Getters e Setters

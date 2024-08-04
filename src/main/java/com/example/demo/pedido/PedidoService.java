@@ -200,25 +200,4 @@ public class PedidoService {
         return response;
     }
 
-//    public List<ClienteDTO> listarTodosOsClientes() {
-//        // Exemplo de implementação
-//        // Esta função deve ser ajustada para refletir a estrutura real do seu banco de dados e modelo de negócios
-//        List<Cliente> clientes = pedidoRepository.findAllClientes();
-//        List<ClienteDTO> collect = clientes.stream()
-//                .map(this::this.clienteService.convertToDTO)
-//                .collect(Collectors.toList());
-//        return collect;
-//    }
-//
-//    public List<ClienteDTO> listarTresClientesComMaiorReceita() {
-//        // Exemplo de implementação
-//        // Esta função deve ser ajustada para refletir a estrutura real do seu banco de dados e modelo de negócios
-//        List<Cliente> clientes = pedidoRepository.findAllClientes();
-//        return clientes.stream()
-//                .sorted((c1, c2) -> c2.getReceita().compareTo(c1.getReceita()))
-//                .limit(3)
-//                .map(this::convertToDTO)
-//                .collect(Collectors.toList());
-//    }
-
 }

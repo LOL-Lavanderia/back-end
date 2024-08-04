@@ -1,6 +1,7 @@
 package com.example.demo.relatorios;
 
 import com.example.demo.cliente.ClienteDTO;
+import com.example.demo.cliente.ClienteService;
 import com.example.demo.pedido.PedidoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,8 @@ public class RelatorioController {
     @Autowired
     private PedidoService pedidoService;
 
+    @Autowired
+    private ClienteService clienteService;
     @GetMapping("/receita")
     public ResponseEntity<RelatorioReceitaResponse> relatorioReceita(
             @RequestParam("dataInicio") LocalDateTime dataInicio,
@@ -28,11 +31,11 @@ public class RelatorioController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-//    @GetMapping("/clientes")
-//    public ResponseEntity<List<ClienteDTO>> relatorioClientes() {
-//        List<ClienteDTO> clientes = pedidoService.listarTodosOsClientes();
-//        return new ResponseEntity<>(clientes, HttpStatus.OK);
-//    }
+    @GetMapping("/clientes")
+    public ResponseEntity<List<ClienteDTO>> relatorioClientes() {
+        List<ClienteDTO> clientes = clienteService.listarTodosOsClientes();
+        return new ResponseEntity<>(clientes, HttpStatus.OK);
+    }
 //
 //    @GetMapping("/clientes-fais")
 //    public ResponseEntity<List<ClienteDTO>> relatorioClientesFais() {
