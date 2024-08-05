@@ -230,7 +230,7 @@ public class UsuarioService {
     }
 
     private TelefoneDTO convertTelefoneToDTO(Telefone telefone) {
-        return new TelefoneDTO(telefone.getNumero());
+        return new TelefoneDTO(telefone.getId(),telefone.getNumero());
     }
 
 }

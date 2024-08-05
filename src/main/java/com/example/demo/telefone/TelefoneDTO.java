@@ -4,7 +4,7 @@ public class TelefoneDTO {
     private Long id;
     private String numero;
 
-    public TelefoneDTO(String numero) {
+    public TelefoneDTO(Long id, String numero) {
         this.numero = numero;
     }
 

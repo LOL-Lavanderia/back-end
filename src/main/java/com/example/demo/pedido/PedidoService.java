@@ -1,6 +1,7 @@
 package com.example.demo.pedido;
 
 import com.example.demo.cliente.Cliente;
+import com.example.demo.cliente.ClienteFielDTO;
 import com.example.demo.relatorios.RelatorioReceitaResponse;
 import com.example.demo.roupa.Roupa;
 import com.example.demo.roupa.RoupaDTO;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -178,10 +180,11 @@ public class PedidoService {
         pedidoDTO.setRoupas(roupasDTO);
         return pedidoDTO;
     }
+
     public RelatorioReceitaResponse calcularReceitaEntreDatas(LocalDateTime dataInicio, LocalDateTime dataFim) {
-        List<PedidoReceita> pedidosResumidos = pedidoRepository.findByOpenDateBetween(dataInicio, dataFim);
+        List<Pedido> pedidosResumidos = pedidoRepository.findByOpenDateBetween(dataInicio, dataFim);
         Double totalReceita = pedidosResumidos.stream()
-                .mapToDouble(PedidoReceita::getValue)
+                .mapToDouble(Pedido::getValue)
                 .sum();
 
         List<PedidoDTO> pedidosDTO = pedidosResumidos.stream()
@@ -193,6 +196,23 @@ public class PedidoService {
         response.setTotalReceita(totalReceita);
 
         return response;
+    }
+
+    public List<ClienteFielDTO> gerarRelatorioClientesFieis() {
+        List<Object[]> results = pedidoRepository.findTopClientes();
+        List<ClienteFielDTO> clienteFielDTOs = new ArrayList<>();
+
+        for (Object[] result : results) {
+            Long id = ((Number) result[0]).longValue();
+            String nome = (String) result[1];
+            Integer quantidadePedidos = ((Number) result[2]).intValue();
+            Double receitaTotal = ((Number) result[3]).doubleValue();
+
+            ClienteFielDTO dto = new ClienteFielDTO(id, nome, quantidadePedidos, receitaTotal);
+            clienteFielDTOs.add(dto);
+        }
+
+        return clienteFielDTOs;
     }
 
 }

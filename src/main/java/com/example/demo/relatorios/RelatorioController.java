@@ -1,5 +1,6 @@
 package com.example.demo.relatorios;
 
+import com.example.demo.cliente.ClienteFielDTO;
 import com.example.demo.pedido.PedidoService;
 import com.example.demo.user.UsuarioDTO;
 import com.example.demo.user.UsuarioService;
@@ -31,4 +32,8 @@ public class RelatorioController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/clientes-fieis")
+    public List<ClienteFielDTO> getClientesFieis() {
+        return pedidoService.gerarRelatorioClientesFieis();
+    }
 }
