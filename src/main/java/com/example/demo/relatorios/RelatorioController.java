@@ -24,7 +24,14 @@ public class RelatorioController {
 
     @Autowired
     private UsuarioService usuarioService;
-    @GetMapping("/receita")
+//SEM DATAS
+    @GetMapping("/total-receita")
+    public ResponseEntity<RelatorioReceitaResponse> relatorioReceita(){
+        RelatorioReceitaResponse response = pedidoService.calcularReceita();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+//COM DATAS
+    @GetMapping("/intervalo-total-receita")
     public ResponseEntity<RelatorioReceitaResponse> relatorioReceita(
             @RequestParam("dataInicio") LocalDateTime dataInicio,
             @RequestParam("dataFim") LocalDateTime dataFim) {

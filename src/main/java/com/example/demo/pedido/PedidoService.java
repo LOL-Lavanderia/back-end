@@ -215,4 +215,17 @@ public class PedidoService {
         return clienteFielDTOs;
     }
 
+    public RelatorioReceitaResponse calcularReceita() {
+        List<Pedido> pedidosResumidos = pedidoRepository.findByOpenDate();
+        Double totalReceita = pedidosResumidos.stream()
+                .mapToDouble(Pedido::getValue)
+                .sum();
+        List<PedidoDTO> pedidosDTO = pedidosResumidos.stream()
+                .map(projecao -> new PedidoDTO(projecao.getId(), projecao.getOpenDate(), projecao.getCloseDate(), projecao.getValue()))
+                .collect(Collectors.toList());
+        RelatorioReceitaResponse response = new RelatorioReceitaResponse();
+        response.setPedidos(pedidosDTO);
+        response.setTotalReceita(totalReceita);
+    return response;
+    }
 }
