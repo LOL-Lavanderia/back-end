@@ -15,6 +15,8 @@ public class PedidoDTO {
     private LocalDateTime openDate;
     private List<RoupaDTO> roupas;
     private Long clienteId;
+    private String nomeCliente;
+
 
     public PedidoDTO(Long id, LocalDateTime openDate, LocalDateTime closeDate, Double value) {
         this.id = id;
@@ -91,6 +93,14 @@ public class PedidoDTO {
         this.clienteId = clienteId;
     }
 
+    public String getNomeCliente() {
+        return nomeCliente;
+    }
+
+    public void setNomeCliente(String name) {
+        this.nomeCliente = name;
+    }
+
     @Override
     public String toString() {
         return "PedidoDTO{" +
@@ -104,4 +114,6 @@ public class PedidoDTO {
                 ", clienteId=" + clienteId +
                 '}';
     }
+
+
 }

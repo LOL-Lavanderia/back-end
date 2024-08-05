@@ -164,6 +164,7 @@ public class PedidoService {
         pedidoDTO.setCloseDate(pedido.getCloseDate());
         pedidoDTO.setOpenDate(pedido.getOpenDate());
         pedidoDTO.setClienteId(pedido.getCliente().getId());
+        pedidoDTO.setNomeCliente(pedido.getCliente().getName());
 
         List<RoupaDTO> roupasDTO = pedido.getPedidoRoupas().stream()
                 .map(pr -> {
