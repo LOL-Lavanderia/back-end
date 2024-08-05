@@ -13,6 +13,16 @@ public class RoleDTO {
     private List<TelefoneDTO> telefones; // Para "client"
     private LocalDate birthDate; // Para "employee"
 
+    public RoleDTO(String cpf, List<EnderecoDTO> enderecosDTO, List<TelefoneDTO> telefonesDTO) {
+        this.cpf = cpf;
+        this.enderecos = enderecosDTO;
+        this.telefones =telefonesDTO;
+    }
+
+    public RoleDTO() {
+
+    }
+
     public String getRole() {
         return role;
     }

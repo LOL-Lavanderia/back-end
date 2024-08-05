@@ -10,6 +10,15 @@ public class EnderecoDTO {
     private String uf;
     private Long tipo;
 
+    public EnderecoDTO(String logradouro, String numero, String localidade, String bairro, String uf, String cep) {
+        this.logradouro = logradouro;
+        this.numero = numero;
+        this.localidade =localidade;
+        this.bairro = bairro;
+        this.uf = uf;
+        this.cep = cep;
+    }
+
     public String getLocalidade() {
         return localidade;
     }

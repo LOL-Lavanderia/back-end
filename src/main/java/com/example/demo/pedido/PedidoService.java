@@ -1,8 +1,6 @@
 package com.example.demo.pedido;
 
 import com.example.demo.cliente.Cliente;
-import com.example.demo.cliente.ClienteDTO;
-import com.example.demo.cliente.ClienteService;
 import com.example.demo.relatorios.RelatorioReceitaResponse;
 import com.example.demo.roupa.Roupa;
 import com.example.demo.roupa.RoupaDTO;
@@ -13,11 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service

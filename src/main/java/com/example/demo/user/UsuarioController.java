@@ -72,4 +72,17 @@ public class UsuarioController {
         }
     }
 
+    @GetMapping("/byRole/{role}")
+    public ResponseEntity<List<UsuarioDTO>> usuariosByRole(
+            @PathVariable("role") String role) {
+        List<UsuarioDTO> usuarios = usuarioService.listUsersByRole(role);
+        return new ResponseEntity<>(usuarios, HttpStatus.OK);
+    }
+//
+//    @GetMapping("/clientes-fais")
+//    public ResponseEntity<List<ClienteDTO>> relatorioClientesFais() {
+//        List<ClienteDTO> clientesFais = pedidoService.listarTresClientesComMaiorReceita();
+//        return new ResponseEntity<>(clientesFais, HttpStatus.OK);
+//    }
+
 }

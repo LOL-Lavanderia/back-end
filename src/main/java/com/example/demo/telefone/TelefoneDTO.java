@@ -4,6 +4,10 @@ public class TelefoneDTO {
     private Long id;
     private String numero;
 
+    public TelefoneDTO(String numero) {
+        this.numero = numero;
+    }
+
     public Long getId() {
         return id;
     }

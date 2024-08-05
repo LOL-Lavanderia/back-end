@@ -114,6 +114,7 @@ public class UsuarioService {
 
         usuario.setEmail(usuarioDTO.getEmail());
         usuario.setName(usuarioDTO.getNome());
+        usuario.setRole(usuarioDTO.getRole().getRole());
 
         usuario = usuarioRepository.save(usuario);
         usuarioDTO.setId(usuario.getId());
@@ -150,6 +151,20 @@ public class UsuarioService {
         } else if (usuario instanceof Cliente) {
             // Define a role como "client"
             roleDTO.setRole("client");
+            Cliente cliente = (Cliente) usuario;
+            roleDTO.setCpf(cliente.getCpf());
+            // Converte e define os endereços
+            List<EnderecoDTO> enderecosDTO = cliente.getEndereco().stream()
+                    .map(this::convertEnderecoToDTO)
+                    .collect(Collectors.toList());
+            roleDTO.setEnderecos(enderecosDTO);
+
+            // Converte e define os telefones
+            List<TelefoneDTO> telefonesDTO = cliente.getTelefone().stream()
+                    .map(this::convertTelefoneToDTO)
+                    .collect(Collectors.toList());
+            roleDTO.setTelefones(telefonesDTO);
+
             usuarioDTO.setRole(roleDTO);
         }
 
@@ -195,6 +210,27 @@ public class UsuarioService {
             throw new RuntimeException("Usuário não encontrado");
         }
         usuarioRepository.deleteById(id);
+    }
+
+    public List<UsuarioDTO> listUsersByRole(String role) {
+        return usuarioRepository.findAllByRole(role).stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    private EnderecoDTO convertEnderecoToDTO(Endereco endereco) {
+        return new EnderecoDTO(
+                endereco.getLogradouro(),
+                endereco.getNumero(),
+                endereco.getLocalidade(),
+                endereco.getBairro(),
+                endereco.getUf(),
+                endereco.getCep()
+        );
+    }
+
+    private TelefoneDTO convertTelefoneToDTO(Telefone telefone) {
+        return new TelefoneDTO(telefone.getNumero());
     }
 
 }

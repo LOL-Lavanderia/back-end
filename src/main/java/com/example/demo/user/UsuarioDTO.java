@@ -1,5 +1,7 @@
 package com.example.demo.user;
 
+import com.example.demo.endereco.EnderecoDTO;
+import com.example.demo.telefone.TelefoneDTO;
 import com.example.demo.user.role.RoleDTO;
 
 public class UsuarioDTO {
@@ -10,6 +12,12 @@ public class UsuarioDTO {
     private String senha;
     private RoleDTO role;
     // Construtor
+
+    public UsuarioDTO(Long id, String nome, String email) {
+        this.id = id;
+        this.email = email;
+        this.nome = nome;
+    }
     public UsuarioDTO(Long id, String email, String senha, String nome, RoleDTO role) {
         this.id = id;
         this.email = email;
@@ -17,13 +25,6 @@ public class UsuarioDTO {
         this.role = role;
         this.nome = nome;
     }
-
-    public UsuarioDTO(Long id, String name, String email) {
-        this.id = id;
-        this.nome = name;
-        this.email = email;
-    }
-
     public UsuarioDTO() {
 
     }

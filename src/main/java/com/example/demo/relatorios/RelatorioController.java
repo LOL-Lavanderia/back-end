@@ -1,8 +1,8 @@
 package com.example.demo.relatorios;
 
-import com.example.demo.cliente.ClienteDTO;
-import com.example.demo.cliente.ClienteService;
 import com.example.demo.pedido.PedidoService;
+import com.example.demo.user.UsuarioDTO;
+import com.example.demo.user.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +22,7 @@ public class RelatorioController {
     private PedidoService pedidoService;
 
     @Autowired
-    private ClienteService clienteService;
+    private UsuarioService usuarioService;
     @GetMapping("/receita")
     public ResponseEntity<RelatorioReceitaResponse> relatorioReceita(
             @RequestParam("dataInicio") LocalDateTime dataInicio,
@@ -31,15 +31,4 @@ public class RelatorioController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/clientes")
-    public ResponseEntity<List<ClienteDTO>> relatorioClientes() {
-        List<ClienteDTO> clientes = clienteService.listarTodosOsClientes();
-        return new ResponseEntity<>(clientes, HttpStatus.OK);
-    }
-//
-//    @GetMapping("/clientes-fais")
-//    public ResponseEntity<List<ClienteDTO>> relatorioClientesFais() {
-//        List<ClienteDTO> clientesFais = pedidoService.listarTresClientesComMaiorReceita();
-//        return new ResponseEntity<>(clientesFais, HttpStatus.OK);
-//    }
 }
