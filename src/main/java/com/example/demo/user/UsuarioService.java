@@ -82,7 +82,7 @@ public class UsuarioService {
                     endereco.setBairro(enderecoDTO.getBairro());
                     endereco.setLocalidade(enderecoDTO.getLocalidade());
                     endereco.setCep(enderecoDTO.getCep());
-                    endereco.setTipo(enderecoDTO.getTipo());
+                    endereco.setUf(enderecoDTO.getUf());
                     return endereco;
                 }).collect(Collectors.toList()));
                 cliente.setTelefone(clienteDTO.getTelefones().stream().map(telefoneDTO -> {

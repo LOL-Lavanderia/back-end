@@ -8,7 +8,6 @@ public class EnderecoDTO {
     private String numero;
     private String localidade;
     private String uf;
-    private Long tipo;
 
     public EnderecoDTO(String logradouro, String numero, String localidade, String bairro, String uf, String cep) {
         this.logradouro = logradouro;
@@ -26,15 +25,6 @@ public class EnderecoDTO {
     public void setLocalidade(String localidade) {
         this.localidade = localidade;
     }
-
-    public Long getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(Long tipo) {
-        this.tipo = tipo;
-    }
-// Getters e setters para cada campo
 
     public Long getId() {
         return id;
@@ -94,7 +84,6 @@ public class EnderecoDTO {
                 ", numero='" + numero + '\'' +
                 ", cidade='" + localidade + '\'' +
                 ", uf='" + uf + '\'' +
-                ", tipo=" + tipo +
                 '}';
     }
 }

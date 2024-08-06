@@ -30,8 +30,6 @@ public class Endereco {
     @Column
     private String uf;
 
-    @Column
-    private Long tipo;
 
     @Override
     public String toString() {
@@ -98,11 +96,4 @@ public class Endereco {
         this.uf = uf;
     }
 
-    public Long getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(Long tipo) {
-        this.tipo = tipo;
-    }
 }
