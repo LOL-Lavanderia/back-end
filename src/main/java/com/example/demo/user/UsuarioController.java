@@ -4,6 +4,7 @@ import com.example.demo.user.auth.AuthDTO;
 import com.example.demo.utils.exceptions.CpfJaCadastradoException;
 import com.example.demo.utils.exceptions.EmailJaCadastradoException;
 import com.example.demo.utils.exceptions.ErrorResponse;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,8 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("Erro interno do servidor"));
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
         }
     }
     @PostMapping("/login")

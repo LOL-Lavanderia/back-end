@@ -12,9 +12,11 @@ import com.example.demo.utils.PasswordService;
 import com.example.demo.utils.exceptions.CpfJaCadastradoException;
 import com.example.demo.utils.exceptions.EmailJaCadastradoException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import com.example.demo.user.role.EmailService;
+import java.util.List;
+import java.util.stream.Collectors;
+import jakarta.mail.MessagingException;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,22 +26,14 @@ import java.util.stream.Collectors;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-    private final JavaMailSender javaMailSender;
+    private final EmailService emailService;
     private final PasswordService passwordService;
 
     @Autowired
-    public UsuarioService(UsuarioRepository usuarioRepository, JavaMailSender javaMailSender, PasswordService passwordService) {
+    public UsuarioService(UsuarioRepository usuarioRepository, EmailService emailService, PasswordService passwordService) {
         this.usuarioRepository = usuarioRepository;
-        this.javaMailSender = javaMailSender;
+        this.emailService = emailService;
         this.passwordService = passwordService;
-    }
-
-    private void enviarEmail(String email, String senhaGerada) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(email);
-        message.setSubject("Sua Nova Senha");
-        message.setText("Sua nova senha é: " + senhaGerada);
-        javaMailSender.send(message);
     }
 
     private String gerarSenhaAleatoria() {
@@ -50,7 +44,7 @@ public class UsuarioService {
         return passwordService.hashPasswordWithSalt(senha, salt);
     }
 
-    public UsuarioDTO saveUsuario(UsuarioDTO usuarioDTO) {
+    public UsuarioDTO saveUsuario(UsuarioDTO usuarioDTO) throws MessagingException {
         // Verifica se o e-mail já existe
         if (usuarioRepository.existsByCpf(usuarioDTO.getRole().getCpf())) {
             throw new CpfJaCadastradoException("CPF já cadastrado");
@@ -69,7 +63,7 @@ public class UsuarioService {
 
                 String senhaGerada = gerarSenhaAleatoria();
                 salt = passwordService.generateSalt();
-                senhaCriptografada= hashSenha(senhaGerada, salt);
+                senhaCriptografada = hashSenha(senhaGerada, salt);
 
                 cliente.setPassword(senhaCriptografada);
                 cliente.setSalt(salt);
@@ -91,7 +85,7 @@ public class UsuarioService {
                     return telefone;
                 }).collect(Collectors.toList()));
 
-                enviarEmail(usuarioDTO.getEmail(), senhaGerada);
+                emailService.sendEmail(usuarioDTO.getEmail(), "Sua conta foi criada com sucesso!", senhaGerada, usuarioDTO.getNome());
                 break;
 
             case "employee":
